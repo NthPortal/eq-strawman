@@ -1,0 +1,9 @@
+.idea
+
+# Build
+/target
+/project/target
+/project/project/target
+.jvm
+.js
+.native
