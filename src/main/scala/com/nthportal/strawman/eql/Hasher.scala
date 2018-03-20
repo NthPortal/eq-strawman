@@ -4,6 +4,10 @@ trait Hasher[R] {
   def state: HashState
   def reset(): Unit
   def result(): R
+  final def +=[T](t: T)(implicit hash: Hash[T]): this.type = {
+    hash.hash(t, state)
+    this
+  }
 }
 
 object Hasher {
