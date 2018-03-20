@@ -113,6 +113,9 @@ object Hash {
   implicit def arrayHash[A](implicit hash: Hash[A]): Hash[Array[A]] =
     (array, state) => for (elem <- array) hash.hash(elem, state)
 
+  implicit def iterableHash[A](implicit hash: Hash[A]): Hash[Iterable[A]] =
+    (iterable, state) => for (elem <- iterable) hash.hash(elem, state)
+
   /* tuples */
   implicit def tuple2[T1, T2](implicit h1: Hash[T1], h2: Hash[T2]): Hash[(T1, T2)] =
     (value, state) => {

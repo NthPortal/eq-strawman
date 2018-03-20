@@ -104,6 +104,19 @@ object Eql {
       if (x.length != y.length) false
       else x.indices forall { i => eql.equal(x(i), y(i)) }
 
+  implicit def iterableEql[A](implicit eql: Eql[A]): Eql[Iterable[A]] =
+    (x, y) => {
+      val xIter = x.iterator
+      val yIter = y.iterator
+
+      var same = true
+      while (xIter.hasNext && yIter.hasNext && same) {
+        same = eql.equal(xIter.next(), yIter.next())
+      }
+
+      same && xIter.hasNext == yIter.hasNext
+    }
+
   /* tuples */
   implicit def tuple2[T1, T2](implicit eql1: Eql[T1], eql2: Eql[T2]): Eql[(T1, T2)] =
     (x, y) => eql1.equal(x._1, y._1) && eql2.equal(x._2, y._2)
