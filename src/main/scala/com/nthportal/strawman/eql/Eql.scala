@@ -176,4 +176,9 @@ object Eql {
     implicit def universal[T <: AnyRef]: Eql[T] = _ equals _
     implicit def refIdentity[T <: AnyRef]: Eql[T] = _ eq _
   }
+
+  object Conversions {
+    implicit def asEquiv[T](implicit eql: Eql[T]): Equiv[T] = eql.equal _
+    implicit def fromEquiv[T](implicit equiv: Equiv[T]): Eql[T] = equiv.equiv _
+  }
 }
