@@ -91,12 +91,12 @@ object Hash {
   implicit object String extends StringHash
 
   implicit def optionHash[A](implicit hash: Hash[A]): Hash[Option[A]] =
-    (option, state) =>
-      if (option.isEmpty) state += noneConstant
-      else {
+    (option, state) => option match {
+      case None => state += noneConstant
+      case Some(value) =>
         state += someConstant
-        hash.hash(option.get, state)
-      }
+        hash.hash(value, state)
+    }
 
   implicit def eitherHash[L, R](implicit hashL: Hash[L], hashR: Hash[R]): Hash[Either[L, R]] =
     (either, state) => either match {

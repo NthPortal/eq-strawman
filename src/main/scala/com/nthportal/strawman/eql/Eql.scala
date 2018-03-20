@@ -84,20 +84,15 @@ object Eql {
 
   implicit def optionEql[A](implicit eql: Eql[A]): Eql[Option[A]] =
     (x, y) =>
-      if (x.isDefined) {
-        if (y.isDefined) eql.equal(x.get, y.get)
-        else false
-      } else y.isEmpty
+      if (x.isEmpty) y.isEmpty
+      else y.isDefined && eql.equal(x.get, y.get)
 
   implicit def eitherEql[L, R](implicit eqlL: Eql[L], eqlR: Eql[R]): Eql[Either[L, R]] =
-    (x, y) =>
-      if (x.isLeft) {
-        if (y.isLeft) eqlL.equal(x.left.get, y.left.get)
-        else false
-      } else {
-        if (y.isRight) eqlR.equal(x.right.get, y.right.get)
-        else false
-      }
+    (x, y) => (x, y) match {
+      case (Left(xL), Left(yL)) => eqlL.equal(xL, yL)
+      case (Right(xR), Right(yR)) => eqlR.equal(xR, yR)
+      case _ => false
+    }
 
   implicit def arrayEql[A](implicit eql: Eql[A]): Eql[Array[A]] =
     (x, y) =>
