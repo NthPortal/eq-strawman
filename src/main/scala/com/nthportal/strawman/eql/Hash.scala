@@ -200,7 +200,8 @@ object Hash {
 
   object Implicits {
     implicit def cooperative[T]: Hash[T] = (value, state) => state += value.##
-    implicit def hashCode[T <: AnyRef]: Hash[T] = (value, state) => state += value.hashCode()
+    implicit def hashCode[T <: AnyRef]: Hash[T] = (value, state) =>
+      state += (if (value eq null) 0 else value.hashCode())
     implicit def refIdentity[T <: AnyRef]: Hash[T] = (value, state) => state += System.identityHashCode(value)
   }
 

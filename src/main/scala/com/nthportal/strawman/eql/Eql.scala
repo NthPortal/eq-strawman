@@ -173,7 +173,8 @@ object Eql {
 
   object Implicits {
     implicit def cooperative[T]: Eql[T] = _ == _
-    implicit def universal[T <: AnyRef]: Eql[T] = _ equals _
+    implicit def universal[T <: AnyRef]: Eql[T] = (x, y) =>
+      if (x eq null) y eq null else x equals y
     implicit def refIdentity[T <: AnyRef]: Eql[T] = _ eq _
   }
 
