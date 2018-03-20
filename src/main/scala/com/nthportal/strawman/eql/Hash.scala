@@ -199,7 +199,9 @@ object Hash {
     }
 
   object Implicits {
-    implicit def hashCodeHash[T <: AnyRef]: Hash[T] = (value, state) => state += value.hashCode()
+    implicit def cooperative[T]: Hash[T] = (value, state) => state += value.##
+    implicit def hashCode[T <: AnyRef]: Hash[T] = (value, state) => state += value.hashCode()
+    implicit def refIdentity[T <: AnyRef]: Hash[T] = (value, state) => state += System.identityHashCode(value)
   }
 
   private[this] val noneConstant = -240160639
