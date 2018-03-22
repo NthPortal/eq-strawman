@@ -46,10 +46,12 @@ object Hasher {
     override def result(): Int = State.value
   }
 
-  object IntHasher {
-    def apply(): IntHasher = new IntHasher
-
+  object IntHasher extends HashFactory.Caching[Int, IntHasher] {
     private final val p1 = 37
     private final val p2 = 19
+
+    def apply(): IntHasher = new IntHasher
+
+    override def newHasher: IntHasher = new IntHasher
   }
 }
