@@ -10,6 +10,13 @@ trait Hasher[R] {
   }
 }
 
+trait HashState {
+  def +=(byte: Byte): this.type
+  def +=(int: Int): this.type
+  def +=(long: Long): this.type
+  def +=(bytes: Array[Byte]): this.type
+}
+
 object Hasher {
   class IntHasher extends Hasher[Int] {
     import IntHasher._
