@@ -1,7 +1,16 @@
 import sbtcrossproject.{crossProject, CrossType}
 
+// I still haven't figured out why I need things outside of
+// `sharedSettings`, nor what those things are
+
 scalaVersion := "2.12.4"
 crossScalaVersions := Seq("2.12.4", "2.13.0-M3")
+
+libraryDependencies ++= Seq(
+  "com.lihaoyi" %% "utest" % "0.6.4" % "test",
+)
+
+testFrameworks += new TestFramework("utest.runner.Framework")
 
 val rawVersion = "0.1.0"
 val sharedSettings = Seq(
@@ -14,6 +23,12 @@ val sharedSettings = Seq(
 
   scalaVersion := "2.12.4",
   crossScalaVersions := Seq("2.12.4", "2.13.0-M3"),
+
+  libraryDependencies ++= Seq(
+    "com.lihaoyi" %% "utest" % "0.6.4" % "test",
+  ),
+
+  testFrameworks += new TestFramework("utest.runner.Framework"),
 
   autoAPIMappings := true,
 
