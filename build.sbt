@@ -1,7 +1,7 @@
 import sbtcrossproject.{crossProject, CrossType}
 
 scalaVersion := "2.12.4"
-crossScalaVersions := Seq("2.11.12", "2.12.4", "2.13.0-M3")
+crossScalaVersions := Seq("2.12.4", "2.13.0-M3")
 
 val rawVersion = "0.1.0"
 val sharedSettings = Seq(
@@ -13,7 +13,7 @@ val sharedSettings = Seq(
   version := rawVersion + { if (isSnapshot.value) "-SNAPSHOT" else "" },
 
   scalaVersion := "2.12.4",
-  crossScalaVersions := Seq("2.11.12", "2.12.4"),
+  crossScalaVersions := Seq("2.12.4", "2.13.0-M3"),
 
   autoAPIMappings := true,
 
@@ -59,11 +59,10 @@ def safeSplitVersion(version: String): Array[Int] = {
 }
 
 lazy val eql =
-  crossProject(JVMPlatform, JSPlatform, NativePlatform)
+  crossProject(JVMPlatform, JSPlatform)
     .withoutSuffixFor(JVMPlatform)
     .crossType(CrossType.Pure)
     .settings(sharedSettings, publishSettings)
 
 lazy val eqlJVM    = eql.jvm
 lazy val eqlJS     = eql.js
-lazy val eqlNative = eql.native
