@@ -1,19 +1,11 @@
 package com.nthportal.strawman.eql
 
-import java.lang.Double.{doubleToRawLongBits, longBitsToDouble}
-import java.lang.Float.{floatToRawIntBits, intBitsToFloat}
-
 import utest._
-import com.nthportal.strawman.eql.Seqs._
+import com.nthportal.strawman.eql.Values._
 
 import scala.reflect.ClassTag
 
 object EqlTests extends TestSuite {
-  private[this] val dNaN1 = Double.NaN
-  private[this] val dNaN2 = longBitsToDouble(doubleToRawLongBits(Double.NaN) ^ Long.MinValue)
-  private[this] val fNaN1 = Float.NaN
-  private[this] val fNaN2 = intBitsToFloat(floatToRawIntBits(Float.NaN) ^ Int.MinValue)
-
   val tests = Tests {
     'primitives - {
       def checkAll[A: Eql](values: A*): Unit =
@@ -76,7 +68,7 @@ object EqlTests extends TestSuite {
       import Eql.Double
       'Option - {
         def some[A](value: A): Option[A] = Some(value)
-        def checkAll[A: Eql](values: Iterable[A]): Unit =
+        def checkAll[A: Eql](values: Seq[A]): Unit =
           for (x <- values; y <- values) (x === y) ==> (some(x) === some(y))
 
         checkAll(ints)
@@ -86,7 +78,7 @@ object EqlTests extends TestSuite {
       'Either - {
         def left[L](value: L): Either[L, L] = Left(value)
         def right[R](value: R): Either[R, R] = Right(value)
-        def checkAll[A: Eql](values: Iterable[A]): Unit = {
+        def checkAll[A: Eql](values: Seq[A]): Unit = {
           for (x <- values; y <- values) {
             (x === y) ==> (left(x) === left(y))
             (x === y) ==> (right(x) === right(y))
@@ -103,7 +95,7 @@ object EqlTests extends TestSuite {
           x.length == y.length &&
             (x.indices forall {i => x(i) === y(i)})
         }
-        def checkAll[A : Eql : ClassTag](values: Iterable[A]): Unit = {
+        def checkAll[A : Eql : ClassTag](values: Seq[A]): Unit = {
           val arrays = for {
             size <- 1 to 2
             v1 <- values
@@ -122,14 +114,14 @@ object EqlTests extends TestSuite {
           x.size == y.size &&
             (0 until x.size forall {i => x.toSeq(i) === y.toSeq(i)})
         }
-        def checkAll[A: Eql](values: Iterable[A]): Unit = {
-          val arrays = for {
+        def checkAll[A: Eql](values: Seq[A]): Unit = {
+          val iterables = for {
             size <- 1 to 2
             v1 <- values
             v2 <- values
           } yield IndexedSeq(v1, v2) take size: Iterable[A]
 
-          for (x <- arrays; y <- arrays) sameIterables(x, y) ==> (x === y)
+          for (x <- iterables; y <- iterables) sameIterables(x, y) ==> (x === y)
         }
 
         checkAll(ints)
@@ -140,7 +132,7 @@ object EqlTests extends TestSuite {
     'tuples - {
       import Eql.Double
       'Tuple2 - {
-        def checkAll[A: Eql, B: Eql](as: Iterable[A], bs: Iterable[B]): Unit = {
+        def checkAll[A: Eql, B: Eql](as: Seq[A], bs: Seq[B]): Unit = {
           val tuples = for {
             a <- as
             b <- bs
@@ -155,7 +147,7 @@ object EqlTests extends TestSuite {
         checkAll(ints, strings)
       }
       'Tuple3 - {
-        def checkAll[A: Eql, B: Eql, C: Eql](as: Iterable[A], bs: Iterable[B], cs: Iterable[C]): Unit = {
+        def checkAll[A: Eql, B: Eql, C: Eql](as: Seq[A], bs: Seq[B], cs: Seq[C]): Unit = {
           val tuples = for {
             a <- as
             b <- bs
