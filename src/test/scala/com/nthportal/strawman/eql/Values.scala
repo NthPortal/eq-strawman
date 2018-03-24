@@ -4,6 +4,8 @@ import java.lang.Double.{doubleToRawLongBits, longBitsToDouble}
 import java.lang.Float.{floatToRawIntBits, intBitsToFloat}
 
 object Values {
+  type Void <: Nothing
+
   val dNaN1: Double = Double.NaN
   val dNaN2: Double = longBitsToDouble(doubleToRawLongBits(Double.NaN) ^ Long.MinValue)
   val fNaN1: Float = Float.NaN

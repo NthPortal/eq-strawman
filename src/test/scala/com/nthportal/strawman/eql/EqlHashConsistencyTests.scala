@@ -50,8 +50,8 @@ object EqlHashConsistencyTests extends TestSuite {
         checkAll(strings map some)
       }
       'Either - {
-        def left[L](value: L): Either[L, L] = Left(value)
-        def right[R](value: R): Either[R, R] = Right(value)
+        def left[L](value: L): Either[L, Void] = Left(value)
+        def right[R](value: R): Either[Void, R] = Right(value)
 
         checkAll(ints map left)
         checkAll(ints map right)

@@ -16,6 +16,10 @@ object Eql {
     override def equal(x: Unit, y: Unit): Boolean = true
   }
 
+  implicit object Nothing extends Eql[Nothing] {
+    override def equal(x: Nothing, y: Nothing): Boolean = throw new AssertionError("can't test equality of nothing")
+  }
+
   trait ByteEql extends Eql[Byte] {
     override def equal(x: Byte, y: Byte): Boolean = x == y
   }

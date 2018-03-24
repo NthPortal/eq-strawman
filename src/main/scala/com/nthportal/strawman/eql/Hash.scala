@@ -16,6 +16,10 @@ object Hash {
   }
   implicit object Unit extends UnitHash
 
+  implicit object Nothing extends Hash[Nothing] {
+    override def hash(value: Nothing, state: HashState): Unit = throw new AssertionError("can't hash nothing")
+  }
+
   trait ByteHash extends Hash[Byte] {
     override def hash(value: Byte, state: HashState): Unit = state += value
   }

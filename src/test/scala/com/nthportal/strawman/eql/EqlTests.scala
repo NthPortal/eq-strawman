@@ -76,14 +76,14 @@ object EqlTests extends TestSuite {
         checkAll(strings)
       }
       'Either - {
-        def left[L](value: L): Either[L, L] = Left(value)
-        def right[R](value: R): Either[R, R] = Right(value)
+        def left[L](value: L): Either[L, Void] = Left(value)
+        def right[R](value: R): Either[Void, R] = Right(value)
         def checkAll[A: Eql](values: Seq[A]): Unit = {
           for (x <- values; y <- values) {
             (x === y) ==> (left(x) === left(y))
             (x === y) ==> (right(x) === right(y))
           }
-          for (x <- values) assert(left(x) =!= right(x))
+          for (x <- values) assert((Left(x): Either[A, A]) =!= Right(x))
         }
 
         checkAll(ints)
