@@ -4,7 +4,7 @@ import sbtcrossproject.{crossProject, CrossType}
 // `sharedSettings`, nor what those things are
 
 scalaVersion := "2.12.4"
-crossScalaVersions := Seq("2.12.4", "2.13.0-M3")
+crossScalaVersions := Seq("2.12.4", "2.13.0-M2")
 
 libraryDependencies ++= Seq(
   "com.lihaoyi" %% "utest" % "0.6.4" % "test",
@@ -22,7 +22,7 @@ val sharedSettings = Seq(
   version := rawVersion + { if (isSnapshot.value) "-SNAPSHOT" else "" },
 
   scalaVersion := "2.12.4",
-  crossScalaVersions := Seq("2.12.4", "2.13.0-M3"),
+  crossScalaVersions := Seq("2.12.4", "2.13.0-M2"),
 
   libraryDependencies ++= Seq(
     "com.lihaoyi" %% "utest" % "0.6.4" % "test",
@@ -79,5 +79,5 @@ lazy val eql =
     .crossType(CrossType.Pure)
     .settings(sharedSettings, publishSettings)
 
-lazy val eqlJVM    = eql.jvm
-lazy val eqlJS     = eql.js
+lazy val eqlJVM = eql.jvm
+lazy val eqlJS  = eql.js
