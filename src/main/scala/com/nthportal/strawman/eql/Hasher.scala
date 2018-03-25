@@ -22,40 +22,39 @@ object Hasher {
     import IntHasher._
 
     private object State extends HashState {
-      private[IntHasher] var value: Int = 0
+      private[IntHasher] var value: Int = initial
 
       override def +=(byte: Byte): this.type = {
-        value = value * p1 + byte * p2
+        value = value * multiplier + byte
         this
       }
 
       override def +=(int: Int): this.type = {
-        value = value * p1 + int * p2
+        value = value * multiplier + int
         this
       }
 
       override def +=(long: Long): this.type = {
-        val tmp = long * p2
-        value = value * p1 + ((tmp >>> Integer.SIZE) ^ tmp).toInt
+        value = value * multiplier + java.lang.Long.hashCode(long)
         this
       }
 
       override def +=(bytes: Array[Byte]): this.type = {
         for (b <- bytes) {
-          value = value * p1 + b * p2
+          value = value * multiplier + b
         }
         this
       }
     }
 
     override def state: HashState = State
-    override def reset(): Unit = State.value = 0
+    override def reset(): Unit = State.value = initial
     override def result(): Int = State.value
   }
 
   object IntHasher extends HashFactory.Caching[Int, IntHasher] {
-    private final val p1 = 37
-    private final val p2 = 19
+    private final val initial = 17
+    private final val multiplier = 31
 
     def apply(): IntHasher = new IntHasher
 
