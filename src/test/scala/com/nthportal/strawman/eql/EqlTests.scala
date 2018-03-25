@@ -9,7 +9,10 @@ object EqlTests extends TestSuite {
   val tests = Tests {
     'primitives - {
       def checkAll[A: Eql](values: A*): Unit =
-        for (x <- values; y <- values) (x == y) ==> (x === y)
+        for (x <- values; y <- values) {
+          (x == y) ==> (x === y)
+          (x != y) ==> (x =!= y)
+        }
 
       'Unit - checkAll(())
       'Byte - checkAll(Byte.MinValue, -1.toByte, 0.toByte, 1.toByte, Byte.MaxValue)
@@ -69,7 +72,10 @@ object EqlTests extends TestSuite {
       'Option - {
         def some[A](value: A): Option[A] = Some(value)
         def checkAll[A: Eql](values: Seq[A]): Unit =
-          for (x <- values; y <- values) (x === y) ==> (some(x) === some(y))
+          for (x <- values; y <- values) {
+            (x === y) ==> (some(x) === some(y))
+            (x =!= y) ==> (some(x) =!= some(y))
+          }
 
         checkAll(ints)
         checkAll(doubles)
@@ -81,7 +87,9 @@ object EqlTests extends TestSuite {
         def checkAll[A: Eql](values: Seq[A]): Unit = {
           for (x <- values; y <- values) {
             (x === y) ==> (left(x) === left(y))
+            (x =!= y) ==> (left(x) =!= left(y))
             (x === y) ==> (right(x) === right(y))
+            (x =!= y) ==> (right(x) =!= right(y))
           }
           for (x <- values) assert((Left(x): Either[A, A]) =!= Right(x))
         }
@@ -102,7 +110,10 @@ object EqlTests extends TestSuite {
             v2 <- values
           } yield Array(v1, v2) take size
 
-          for (x <- arrays; y <- arrays) sameArrays(x, y) ==> (x === y)
+          for (x <- arrays; y <- arrays) {
+            sameArrays(x, y) ==> (x === y)
+            !sameArrays(x, y) ==> (x =!= y)
+          }
         }
 
         checkAll(ints)
@@ -121,7 +132,10 @@ object EqlTests extends TestSuite {
             v2 <- values
           } yield IndexedSeq(v1, v2) take size: Iterable[A]
 
-          for (x <- iterables; y <- iterables) sameIterables(x, y) ==> (x === y)
+          for (x <- iterables; y <- iterables) {
+            sameIterables(x, y) ==> (x === y)
+            !sameIterables(x, y) ==> (x =!= y)
+          }
         }
 
         checkAll(ints)
@@ -141,6 +155,9 @@ object EqlTests extends TestSuite {
           for (x <- tuples; y <- tuples) {
             (x._1 === y._1 &&
               x._2 === y._2) ==> (x === y)
+
+            (x._1 =!= y._1 ||
+              x._2 =!= y._2) ==> (x =!= y)
           }
         }
 
@@ -158,6 +175,10 @@ object EqlTests extends TestSuite {
             (x._1 === y._1 &&
               x._2 === y._2 &&
               x._3 === y._3) ==> (x === y)
+
+            (x._1 =!= y._1 ||
+              x._2 =!= y._2 ||
+              x._3 =!= y._3) ==> (x =!= y)
           }
         }
 

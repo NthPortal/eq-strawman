@@ -1,11 +1,12 @@
 package com.nthportal.strawman.eql
 
-import java.{lang => jl}
+import java.lang.Double.{doubleToLongBits, doubleToRawLongBits}
+import java.lang.Float.{floatToIntBits, floatToRawIntBits}
 
 trait Eql[T] {
   def equal(x: T, y: T): Boolean
 
-  final def notEqual(x: T, y: T): Boolean = !equal(x, y)
+  def notEqual(x: T, y: T): Boolean = !equal(x, y)
 }
 
 object Eql {
@@ -14,6 +15,7 @@ object Eql {
   /* primitives */
   implicit object Unit extends Eql[Unit] {
     override def equal(x: Unit, y: Unit): Boolean = true
+    override def notEqual(x: Unit, y: Unit): Boolean = false
   }
 
   implicit object Nothing extends Eql[Nothing] {
@@ -22,61 +24,68 @@ object Eql {
 
   trait ByteEql extends Eql[Byte] {
     override def equal(x: Byte, y: Byte): Boolean = x == y
+    override def notEqual(x: Byte, y: Byte): Boolean = x != y
   }
   implicit object Byte extends ByteEql
 
   trait ShortEql extends Eql[Short] {
     override def equal(x: Short, y: Short): Boolean = x == y
+    override def notEqual(x: Short, y: Short): Boolean = x != y
   }
   implicit object Short extends ShortEql
 
   trait IntEql extends Eql[Int] {
     override def equal(x: Int, y: Int): Boolean = x == y
+    override def notEqual(x: Int, y: Int): Boolean = x != y
   }
   implicit object Int extends IntEql
 
   trait LongEql extends Eql[Long] {
     override def equal(x: Long, y: Long): Boolean = x == y
+    override def notEqual(x: Long, y: Long): Boolean = x != y
   }
   implicit object Long extends LongEql
 
   trait CharEql extends Eql[Char] {
     override def equal(x: Char, y: Char): Boolean = x == y
+    override def notEqual(x: Char, y: Char): Boolean = x != y
   }
   implicit object Char extends CharEql
 
   /* floating point, ugh */
   trait FloatEql extends Eql[Float] {
-    override def equal(x: Float, y: Float): Boolean =
-      jl.Float.floatToIntBits(x) == jl.Float.floatToIntBits(y)
+    override def equal(x: Float, y: Float): Boolean = floatToIntBits(x) == floatToIntBits(y)
+    override def notEqual(x: Float, y: Float): Boolean = floatToIntBits(x) != floatToIntBits(y)
   }
   implicit object Float extends FloatEql
 
   trait IeeeFloatEql extends Eql[Float] {
     override def equal(x: Float, y: Float): Boolean = x == y
+    override def notEqual(x: Float, y: Float): Boolean = x != y
   }
   implicit object IeeeFloat extends IeeeFloatEql
 
   trait FloatStrictEql extends Eql[Float] {
-    override def equal(x: Float, y: Float): Boolean =
-      jl.Float.floatToRawIntBits(x) == jl.Float.floatToRawIntBits(y)
+    override def equal(x: Float, y: Float): Boolean = floatToRawIntBits(x) == floatToRawIntBits(y)
+    override def notEqual(x: Float, y: Float): Boolean = floatToRawIntBits(x) != floatToRawIntBits(y)
   }
   implicit object FloatStrict extends FloatStrictEql
 
   trait DoubleEql extends Eql[Double] {
-    override def equal(x: Double, y: Double): Boolean =
-      jl.Double.doubleToLongBits(x) == jl.Double.doubleToLongBits(y)
+    override def equal(x: Double, y: Double): Boolean = doubleToLongBits(x) == doubleToLongBits(y)
+    override def notEqual(x: Double, y: Double): Boolean = doubleToLongBits(x) != doubleToLongBits(y)
   }
   implicit object Double extends DoubleEql
 
   trait IeeeDoubleEql extends Eql[Double] {
     override def equal(x: Double, y: Double): Boolean = x == y
+    override def notEqual(x: Double, y: Double): Boolean = x != y
   }
   implicit object IeeeDouble extends IeeeDoubleEql
 
   trait DoubleStrictEql extends Eql[Double] {
-    override def equal(x: Double, y: Double): Boolean =
-      jl.Double.doubleToRawLongBits(x) == jl.Double.doubleToRawLongBits(y)
+    override def equal(x: Double, y: Double): Boolean = doubleToRawLongBits(x) == doubleToRawLongBits(y)
+    override def notEqual(x: Double, y: Double): Boolean = doubleToRawLongBits(x) != doubleToRawLongBits(y)
   }
   implicit object DoubleStrict extends DoubleStrictEql
 
