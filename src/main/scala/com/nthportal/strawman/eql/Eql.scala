@@ -3,10 +3,12 @@ package com.nthportal.strawman.eql
 import java.lang.Double.{doubleToLongBits, doubleToRawLongBits}
 import java.lang.Float.{floatToIntBits, floatToRawIntBits}
 
-trait Eql[T] {
+trait Eql[T] extends Equiv[T] {
   def equal(x: T, y: T): Boolean
 
   def notEqual(x: T, y: T): Boolean = !equal(x, y)
+
+  override final def equiv(x: T, y: T): Boolean = equal(x, y)
 }
 
 object Eql {
@@ -200,7 +202,6 @@ object Eql {
   }
 
   object Conversions {
-    implicit def asEquiv[T](implicit eql: Eql[T]): Equiv[T] = eql.equal _
     implicit def fromEquiv[T](implicit equiv: Equiv[T]): Eql[T] = equiv.equiv _
   }
 }
