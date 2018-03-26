@@ -6,6 +6,8 @@ import java.lang.Float.{floatToIntBits, floatToRawIntBits}
 
 trait Hash[T] {
   def hash(value: T, state: HashState): Unit
+
+  final def on[U](f: U => T): Hash[U] = (value, state) => hash(f(value), state)
 }
 
 object Hash {

@@ -7,6 +7,8 @@ trait Eql[T] {
   def equal(x: T, y: T): Boolean
 
   def notEqual(x: T, y: T): Boolean = !equal(x, y)
+
+  final def on[U](f: U => T): Eql[U] = (x, y) => equal(f(x), f(y))
 }
 
 object Eql {
