@@ -12,6 +12,9 @@ trait Eql[T] {
 object Eql {
   @inline def apply[T: Eql]: Eql[T] = implicitly[Eql[T]]
 
+  def by[T, S](f: T => S)(implicit eql: Eql[S]): Eql[T] =
+    (x, y) => eql.equal(f(x), f(y))
+
   /* primitives */
   implicit object Unit extends Eql[Unit] {
     override def equal(x: Unit, y: Unit): Boolean = true

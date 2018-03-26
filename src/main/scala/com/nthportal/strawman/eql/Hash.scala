@@ -11,6 +11,9 @@ trait Hash[T] {
 object Hash {
   @inline def apply[T: Hash]: Hash[T] = implicitly[Hash[T]]
 
+  def by[T, S](f: T => S)(implicit hash: Hash[S]): Hash[T] =
+    (value, state) => hash.hash(f(value), state)
+
   /* primitives */
   trait UnitHash extends Hash[Unit] {
     override def hash(value: Unit, state: HashState): Unit = state += 0
