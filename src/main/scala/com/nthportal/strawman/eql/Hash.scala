@@ -1,7 +1,8 @@
 package com.nthportal.strawman.eql
 
 import java.nio.charset.StandardCharsets
-import java.{lang => jl}
+import java.lang.Double.{doubleToLongBits, doubleToRawLongBits}
+import java.lang.Float.{floatToIntBits, floatToRawIntBits}
 
 trait Hash[T] {
   def hash(value: T, state: HashState): Unit
@@ -47,13 +48,13 @@ object Hash {
 
   /* floating point, ugh */
   trait FloatHash extends Hash[Float] {
-    override def hash(value: Float, state: HashState): Unit = state += jl.Float.hashCode(value)
+    override def hash(value: Float, state: HashState): Unit = state += floatToIntBits(value)
   }
   implicit object Float extends FloatHash
 
   trait IeeeFloatHash extends Hash[Float] {
     override def hash(value: Float, state: HashState): Unit = {
-      val h = jl.Float.floatToRawIntBits(value) match {
+      val h = floatToRawIntBits(value) match {
         case scala.Int.MinValue => 0 // map -0.0f to 0.0f
         case int => int
       }
@@ -63,18 +64,18 @@ object Hash {
   implicit object IeeeFloat extends IeeeFloatHash
 
   trait FloatStrictHash extends Hash[Float] {
-    override def hash(value: Float, state: HashState): Unit = state += jl.Float.floatToRawIntBits(value)
+    override def hash(value: Float, state: HashState): Unit = state += floatToRawIntBits(value)
   }
   implicit object FloatStrict extends FloatStrictHash
 
   trait DoubleHash extends Hash[Double] {
-    override def hash(value: Double, state: HashState): Unit = state += jl.Double.hashCode(value)
+    override def hash(value: Double, state: HashState): Unit = state += doubleToLongBits(value)
   }
   implicit object Double extends DoubleHash
 
   trait IeeeDoubleHash extends Hash[Double] {
     override def hash(value: Double, state: HashState): Unit = {
-      val h = jl.Double.doubleToRawLongBits(value) match {
+      val h = doubleToRawLongBits(value) match {
         case scala.Long.MinValue => 0 // map -0.0 to 0.0
         case long => long
       }
@@ -84,7 +85,7 @@ object Hash {
   implicit object IeeeDouble extends IeeeDoubleHash
 
   trait DoubleStrictHash extends Hash[Double] {
-    override def hash(value: Double, state: HashState): Unit = state += jl.Double.doubleToRawLongBits(value)
+    override def hash(value: Double, state: HashState): Unit = state += doubleToRawLongBits(value)
   }
   implicit object DoubleStrict extends DoubleStrictHash
 
