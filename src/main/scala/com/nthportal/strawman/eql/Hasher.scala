@@ -12,6 +12,7 @@ trait Hasher[R] {
 
 trait HashState {
   def +=(byte: Byte): this.type
+  def +=(short: Short): this.type
   def +=(int: Int): this.type
   def +=(long: Long): this.type
   def +=(bytes: Array[Byte]): this.type
@@ -26,6 +27,11 @@ object Hasher {
 
       override def +=(byte: Byte): this.type = {
         value = value * multiplier + byte
+        this
+      }
+
+      override def +=(short: Short): this.type = {
+        value = value * multiplier + short
         this
       }
 

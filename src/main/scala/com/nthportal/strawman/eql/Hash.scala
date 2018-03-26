@@ -32,7 +32,7 @@ object Hash {
   implicit object Byte extends ByteHash
 
   trait ShortHash extends Hash[Short] {
-    override def hash(value: Short, state: HashState): Unit = state += value.toInt
+    override def hash(value: Short, state: HashState): Unit = state += value
   }
   implicit object Short extends ShortHash
 
